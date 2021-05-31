@@ -29,6 +29,7 @@ defmodule ExBetterNew do
     middleware = [
       {Tesla.Middleware.BaseUrl, base_url},
       {Tesla.Middleware.Headers, Keyword.get(opts, :headers, [])},
+      # {Tesla.Middleware.Timeout, Keyword.get(opts, :timeout, [timeout: 5_000])},
       {Tesla.Middleware.Headers,
       [
         {"User-Agent", @default_user_agent},
@@ -41,6 +42,12 @@ defmodule ExBetterNew do
       end
       }
     ]
+
+    middleware = middleware ++ case Keyword.get(opts, :retry, true) do
+      true ->  [ExBetterNew.Client.retry_middleware]
+      _ -> []
+    end
+
     Tesla.client(middleware)
   end
 

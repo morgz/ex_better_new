@@ -17,16 +17,19 @@ defmodule ExBetterNew.Client do
   # plug(Tesla.Middleware.JSON, enable_decoding: ["application/json", engine: Jason])
   plug(Tesla.Middleware.JSON)
 
-  plug(Tesla.Middleware.Retry,
-    delay: 500,
-    max_retries: 10,
-    max_delay: 4_000,
-    should_retry: fn
-      {:ok, %{status: status}} when status in [500] -> true
-      {:ok, _} -> false
-      {:error, _} -> true
-    end
-  )
-
   @type t :: Tesla.Client.t()
+
+  def retry_middleware() do
+    { Tesla.Middleware.Retry, [
+        delay: 500,
+        max_retries: 10,
+        max_delay: 4_000,
+        should_retry: fn
+          {:ok, %{status: status}} when status in [500] -> true
+          {:ok, _} -> false
+          {:error, _} -> true
+        end
+      ]
+    }
+  end
 end
