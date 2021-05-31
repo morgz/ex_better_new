@@ -44,6 +44,32 @@ defmodule ExBetterNew do
     Tesla.client(middleware)
   end
 
+  # client = ExBetterNew.client(:production, nil)
+  # client |> ExBetterNew.login(_,_)
+  def login(client, username, password) do
+    url = "auth/customer/login"
+
+    body = %{
+      username: username,
+      password: password
+    }
+
+    case request(
+      client,
+      method: :post,
+      url: url,
+      body: body
+    ) do
+      {:ok, %Tesla.Env{status: status, url: url, method: method, body: body}}
+      when status in @success_codes ->
+        {:ok, [{:url, url}, {:status, status}, {:method, method}, {:body, body}]}
+      {:ok, %Tesla.Env{body: body}} ->
+        {:error, body}
+      {:error, _} = other ->
+        other
+    end
+  end
+
   # client = ExBetterNew.client(:production, "token")
   # client |> ExBetterNew.current_user
   def current_user(client) do
