@@ -27,7 +27,7 @@ defmodule ExBetterNew.Client do
         should_retry: fn
           {:ok, %{status: status}} when status in [500] -> true
           {:ok, _} -> false
-          {:error, _} -> true
+          {:error, _} -> false
         end
       ]
     }

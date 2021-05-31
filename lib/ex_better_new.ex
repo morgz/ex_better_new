@@ -34,7 +34,8 @@ defmodule ExBetterNew do
       [
         {"User-Agent", @default_user_agent},
         {"Origin", "https://bookings.better.org.uk"},
-        {"Accept-Language", "en-GB;q=1.0"}
+        {"Accept-Language", "en-GB;q=1.0"},
+        {"Accept", "application/json"}
       ] ++ case token do # Maybe add the token if it's provided
         nil -> []
         "" -> []
